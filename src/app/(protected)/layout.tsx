@@ -1,25 +1,22 @@
 "use client";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { Stack, CircularProgress } from "@mui/material";
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
-	const { isAuthenticated } = useAuthContext();
+	const { isAuthenticated, isReady } = useAuthContext();
 	const router = useRouter();
 	const pathname = usePathname();
-	const [checking, setChecking] = useState(true);
 
 	useEffect(() => {
-		// Evitar parpadeos: verificamos en cliente y redirigimos si no hay sesión
+		if (!isReady) return;
 		if (!isAuthenticated) {
 			router.replace(`/login?next=${encodeURIComponent(pathname)}`);
-		} else {
-			setChecking(false);
 		}
-	}, [isAuthenticated, pathname, router]);
+	}, [isAuthenticated, isReady, pathname, router]);
 
-	if (!isAuthenticated || checking) {
+	if (!isReady) {
 		return (
 			<Stack
 				alignItems="center"
@@ -30,6 +27,8 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
 			</Stack>
 		);
 	}
+
+	if (!isAuthenticated) return null;
 
 	return <>{children}</>;
 }
