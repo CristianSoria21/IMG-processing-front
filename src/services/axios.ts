@@ -1,11 +1,11 @@
 import axios from "axios";
 
-export const http = axios.create({
+export const axiosService = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_API_URL,
 	withCredentials: true,
 });
 
-http.interceptors.request.use((config) => {
+axiosService.interceptors.request.use((config) => {
 	if (typeof window !== "undefined") {
 		const token = localStorage.getItem("token");
 		if (token) config.headers.Authorization = `Bearer ${token}`;

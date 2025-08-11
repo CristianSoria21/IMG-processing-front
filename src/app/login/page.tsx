@@ -15,12 +15,11 @@ import Link from "next/link";
 
 export default function LoginPage() {
 	const { login, loading, error } = useAuth();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [form, setForm] = useState({ email: "", password: "" });
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		login(email, password);
+		login(form);
 	};
 
 	return (
@@ -30,7 +29,6 @@ export default function LoginPage() {
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
-				bgcolor: "grey.100",
 			}}
 		>
 			<Card
@@ -57,16 +55,20 @@ export default function LoginPage() {
 								label="Email"
 								type="email"
 								fullWidth
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
+								value={form.email}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, email: e.target.value }))
+								}
 								required
 							/>
 							<TextField
 								label="Password"
 								type="password"
 								fullWidth
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
+								value={form.password}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, password: e.target.value }))
+								}
 								required
 							/>
 							<Button
@@ -79,7 +81,7 @@ export default function LoginPage() {
 								{loading ? "Loading..." : "Login"}
 							</Button>
 							<Typography variant="body2" textAlign="center">
-								Don't have an account? <Link href="/register">Register</Link>
+								Dont have an account? <Link href="/register">Register</Link>
 							</Typography>
 						</Stack>
 					</form>

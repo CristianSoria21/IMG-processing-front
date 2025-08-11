@@ -1,80 +1,70 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-type User = { id: string; email: string };
-type AuthContextType = {
+// Usuario autenticado (lo que guarda el contexto/localStorage)
+type AuthUser = { id: string; email: string; name?: string };
+
+type AuthValue = {
 	isAuthenticated: boolean;
-	user: User | null;
+	isReady: boolean;
+	user: AuthUser | null;
 	token: string | null;
-	setAuth: (p: { token: string; user: User }) => void;
+	setAuth: (p: { token: string; user: AuthUser }) => void;
 	logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthValue | null>(null);
+
+const readAuth = (): { token: string | null; user: AuthUser | null } => {
+	if (typeof window === "undefined") return { token: null, user: null };
+	const t = localStorage.getItem("token");
+	const u = localStorage.getItem("user");
+	try {
+		return { token: t, user: u ? (JSON.parse(u) as AuthUser) : null };
+	} catch {
+		return { token: t, user: null };
+	}
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [token, setToken] = useState<string | null>(null);
-	const [user, setUser] = useState<User | null>(null);
+	const [auth, setAuthState] = useState(readAuth);
+	const [isReady, setIsReady] = useState(false);
 
-	// Leer estado inicial desde localStorage
 	useEffect(() => {
-		const t = localStorage.getItem("token");
-		const u = localStorage.getItem("user");
-		if (t && u) {
-			setToken(t);
-			try {
-				setUser(JSON.parse(u));
-			} catch {
-				setUser(null);
-			}
-		}
-	}, []);
-
-	// Sincronizar si cambia en otras pestañas o desde hooks
-	useEffect(() => {
-		const onStorage = (e: StorageEvent) => {
-			if (e.key === "token" || e.key === "user") {
-				const t = localStorage.getItem("token");
-				const u = localStorage.getItem("user");
-				setToken(t);
-				setUser(u ? JSON.parse(u) : null);
-			}
-		};
-		const onCustom = () =>
-			onStorage(new StorageEvent("storage", { key: "token" }));
-		window.addEventListener("storage", onStorage);
-		window.addEventListener("auth-changed", onCustom as any);
+		const sync = () => setAuthState(readAuth());
+		setIsReady(true);
+		window.addEventListener("storage", sync);
+		window.addEventListener("auth-changed", sync as any);
 		return () => {
-			window.removeEventListener("storage", onStorage);
-			window.removeEventListener("auth-changed", onCustom as any);
+			window.removeEventListener("storage", sync);
+			window.removeEventListener("auth-changed", sync as any);
 		};
 	}, []);
 
-	const setAuth: AuthContextType["setAuth"] = ({ token, user }) => {
+	const setAuth: AuthValue["setAuth"] = ({ token, user }) => {
 		localStorage.setItem("token", token);
 		localStorage.setItem("user", JSON.stringify(user));
-		setToken(token);
-		setUser(user);
-		window.dispatchEvent(new Event("auth-changed")); // avisa a toda la app
+		setAuthState({ token, user });
+		window.dispatchEvent(new Event("auth-changed"));
 	};
 
 	const logout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("user");
-		setToken(null);
-		setUser(null);
+		setAuthState({ token: null, user: null });
 		window.dispatchEvent(new Event("auth-changed"));
 	};
 
-	const value = useMemo<AuthContextType>(
+	const value = useMemo<AuthValue>(
 		() => ({
-			isAuthenticated: !!token,
-			user,
-			token,
+			isAuthenticated: !!auth.token,
+			isReady,
+			user: auth.user,
+			token: auth.token,
 			setAuth,
 			logout,
 		}),
-		[token, user]
+		[auth, isReady]
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -6,23 +6,19 @@ export type Paginated<T> = {
 };
 
 export type ImageItem = {
-	id: string;
-	url: string;
+	id: number;
+	originalUrl: string;
+	processedUrl?: string | null;
+	createdAt: string;
+};
+
+export type User = {
 	name: string;
-	createdAt: string;
-	status?: "ready" | "processing" | "failed";
+	email: string;
+	password: string;
 };
 
-export type JobItem = {
-	id: string;
-	imageId: string;
-	status: "queued" | "running" | "done" | "failed";
-	progress?: number;
-	resultUrl?: string;
-	createdAt: string;
-};
-
-export type LoginResponse = {
-	token: string;
-	user: { id: string; email: string };
-};
+export type AuthUser = { id: string; email: string; name?: string };
+export type LoginData = { email: string; password: string };
+export type UserRegister = { name: string; email: string; password: string };
+export type LoginResponse = { token: string; user: AuthUser };

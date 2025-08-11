@@ -1,8 +1,9 @@
 "use client";
+
 import { useState } from "react";
-import { Api } from "@/services/api";
+import { axiosService } from "@/services/axios";
 import { useRouter } from "next/navigation";
-import type { LoginResponse } from "@/types";
+import type { LoginData, LoginResponse, User } from "@/types";
 import { useAuthContext } from "@/context/AuthContext";
 
 export function useAuth() {
@@ -11,39 +12,45 @@ export function useAuth() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const login = async (email: string, password: string) => {
+	const login = async (loginData: LoginData) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const { data } = await Api.login(email, password); // LoginResponse
+			const { data } = await axiosService.post<LoginResponse>(
+				"/auth/login",
+				loginData
+			);
 			persistAuth(data);
-			// redirección: si hay ?next=..., respétalo
 			const next =
 				new URLSearchParams(window.location.search).get("next") || "/dashboard";
 			router.replace(next);
 		} catch (e: any) {
-			setError(e.response?.data?.message || "Login failed");
+			setError(e.response?.data?.error || "Login failed");
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const register = async (name: string, email: string, password: string) => {
+	const register = async (user: User) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const { data } = await Api.register(email, password, name);
+			const { data } = await axiosService.post<LoginResponse>(
+				"/auth/register",
+				user
+			);
 			persistAuth(data);
 			router.replace("/dashboard");
 		} catch (e: any) {
-			setError(e.response?.data?.message || "Register failed");
+			console.log(e);
+			setError(e.response?.data?.error || "Register failed");
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	const persistAuth = (res: LoginResponse) => {
-		setAuth({ token: res.token, user: res.user }); // actualiza contexto + localStorage
+		setAuth({ token: res.token, user: res.user });
 	};
 
 	return { login, register, loading, error };

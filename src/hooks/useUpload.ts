@@ -1,13 +1,17 @@
 "use client";
+import { axiosService } from "@/services/axios";
 import { useState } from "react";
-import { Api } from "@/services/api";
 
 export function useUpload(onDone?: () => void) {
 	const [loading, setLoading] = useState(false);
 	const upload = async (file: File) => {
 		setLoading(true);
 		try {
-			await Api.uploadImage(file);
+			const form = new FormData();
+			form.append("file", file);
+			await axiosService.post("/images", form, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
 			onDone?.();
 		} finally {
 			setLoading(false);

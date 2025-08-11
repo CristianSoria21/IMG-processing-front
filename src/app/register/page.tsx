@@ -15,13 +15,11 @@ import Link from "next/link";
 
 export default function RegisterPage() {
 	const { register, loading, error } = useAuth();
-	const [name, setName] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [form, setForm] = useState({ name: "", email: "", password: "" });
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		register(name, email, password);
+		register(form);
 	};
 
 	return (
@@ -31,7 +29,6 @@ export default function RegisterPage() {
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
-				bgcolor: "grey.100",
 			}}
 		>
 			<Card
@@ -57,24 +54,30 @@ export default function RegisterPage() {
 							<TextField
 								label="Name"
 								fullWidth
-								value={name}
-								onChange={(e) => setName(e.target.value)}
+								value={form.name}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, name: e.target.value }))
+								}
 								required
 							/>
 							<TextField
 								label="Email"
 								type="email"
 								fullWidth
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
+								value={form.email}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, email: e.target.value }))
+								}
 								required
 							/>
 							<TextField
 								label="Password"
 								type="password"
 								fullWidth
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
+								value={form.password}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, password: e.target.value }))
+								}
 								required
 							/>
 							<Button
