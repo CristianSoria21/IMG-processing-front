@@ -6,7 +6,6 @@ import { UploadDialog } from "@/components/UploadDialog";
 import {
 	Grid,
 	Button,
-	TextField,
 	Stack,
 	Snackbar,
 	Alert,
@@ -17,7 +16,7 @@ import { useImages } from "@/hooks/useImages";
 import { useUpload } from "@/hooks/useUpload";
 
 export default function Page() {
-	const { items, loading, q, setQ, refetch } = useImages();
+	const { items, loading, refetch } = useImages();
 	const [open, setOpen] = useState(false);
 	const [toast, setToast] = useState<string | null>(null);
 	const { upload, loading: uploading } = useUpload(async () => {
@@ -37,7 +36,6 @@ export default function Page() {
 					Upload
 				</Button>
 			</Stack>
-
 			{loading ? (
 				<Stack alignItems="center" sx={{ py: 10 }}>
 					<CircularProgress />
@@ -51,13 +49,13 @@ export default function Page() {
 					))}
 				</Grid>
 			)}
-
 			<UploadDialog
 				open={open}
 				onClose={() => setOpen(false)}
 				loading={uploading}
-				onPick={(f) => upload(f)}
+				onSubmit={({ file, operations }) => upload(file, operations)}
 			/>
+
 			<Snackbar
 				open={!!toast}
 				autoHideDuration={2000}

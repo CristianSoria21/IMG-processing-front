@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import {
 	Card,
@@ -11,7 +12,6 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
-	DialogActions,
 	IconButton,
 	Tooltip,
 } from "@mui/material";
@@ -45,13 +45,12 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 			<Card
 				sx={{
 					width: "100%",
-					maxWidth: 920, // hace el card “un poco más ancho”
+					maxWidth: 920,
 					mx: "auto",
 					borderRadius: 2.5,
 					overflow: "hidden",
 				}}
 			>
-				{/* Header con imágenes (click para abrir visor) */}
 				<Box
 					sx={{
 						display: "grid",
