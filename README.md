@@ -93,3 +93,7 @@ Interfaz para gestionar imágenes:
 
 - El cliente HTTP (`axiosService`) agrega el token desde `localStorage` (Authorization: Bearer).
 - Si ves errores de CORS en desarrollo, considera usar **rewrites** en Next o habilitar CORS en el backend.
+
+## Repositorio del BACKEND
+
+https://github.com/CristianSoria21/IMG-processing-api
