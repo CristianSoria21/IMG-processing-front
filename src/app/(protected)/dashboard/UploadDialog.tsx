@@ -65,8 +65,15 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 
 	const validDims = (v: number | null) =>
 		v == null || (Number.isFinite(v) && v > 0 && v <= 4000);
+	const hasAnyOperation =
+		options.grayscale ||
+		(options.width !== null && options.height !== null) ||
+		options.rotation !== 0;
 	const canSubmit =
-		!!file && validDims(options.width) && validDims(options.height);
+		!!file &&
+		validDims(options.width) &&
+		validDims(options.height) &&
+		hasAnyOperation;
 
 	const submit = () => {
 		if (!file || !canSubmit) return;
@@ -142,7 +149,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 										}
 									/>
 								}
-								label="Escala de grices"
+								label="Escala de grises"
 							/>
 
 							<Stack direction="row" spacing={2}>
