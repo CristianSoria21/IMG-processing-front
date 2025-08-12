@@ -1,17 +1,7 @@
 "use client";
+
+import { AuthUser, AuthValue } from "@/types";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-
-// Usuario autenticado (lo que guarda el contexto/localStorage)
-type AuthUser = { id: string; email: string; name?: string };
-
-type AuthValue = {
-	isAuthenticated: boolean;
-	isReady: boolean;
-	user: AuthUser | null;
-	token: string | null;
-	setAuth: (p: { token: string; user: AuthUser }) => void;
-	logout: () => void;
-};
 
 const AuthContext = createContext<AuthValue | null>(null);
 

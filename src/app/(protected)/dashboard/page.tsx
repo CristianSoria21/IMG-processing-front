@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ImageCard } from "@/components/ImageCard";
-import { UploadDialog } from "@/components/UploadDialog";
+import { UploadDialog } from "@/app/(protected)/dashboard/UploadDialog";
 import {
 	Grid,
 	Button,
@@ -33,7 +33,7 @@ export default function Page() {
 					variant="contained"
 					onClick={() => setOpen(true)}
 				>
-					Upload
+					Subir
 				</Button>
 			</Stack>
 			{loading ? (

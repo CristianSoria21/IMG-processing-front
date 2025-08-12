@@ -87,7 +87,7 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 							<img
 								src={item.processedUrl!}
 								alt={`processed-${item.id}`}
-								onClick={() => openViewer(item.processedUrl!, "Processed")}
+								onClick={() => openViewer(item.processedUrl!, "Procesada")}
 								style={{
 									width: "100%",
 									height: 220,
@@ -98,7 +98,7 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 							/>
 							<Chip
 								color="success"
-								label="Processed"
+								label="Procesada"
 								size="small"
 								sx={{ position: "absolute", top: 8, left: 8 }}
 							/>
@@ -122,7 +122,6 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 					</Stack>
 				</CardContent>
 
-				{/* Acciones: Edit / Delete */}
 				<CardActions
 					sx={{ px: 2, pb: 2, pt: 1, justifyContent: "flex-end", gap: 1 }}
 				>
@@ -132,7 +131,7 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 						startIcon={<EditIcon />}
 						onClick={() => onEdit?.(item.id)}
 					>
-						Edit
+						Editar
 					</Button>
 					<Button
 						size="small"
@@ -141,20 +140,19 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 						startIcon={<DeleteIcon />}
 						onClick={() => onDelete?.(item.id)}
 					>
-						Delete
+						Eliminar
 					</Button>
 				</CardActions>
 			</Card>
 
-			{/* Viewer dialog GRANDE y FIJO */}
 			<Dialog
 				open={viewer.open}
 				onClose={closeViewer}
-				maxWidth={false} // desactiva maxWidth por defecto
+				maxWidth={false}
 				PaperProps={{
 					sx: {
-						width: 1000, // ancho fijo
-						height: 680, // alto fijo
+						width: 1000,
+						height: 680,
 						m: 2,
 						display: "flex",
 					},
@@ -186,7 +184,6 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 						bgcolor: "background.default",
 					}}
 				>
-					{/* Contenedor fijo que no cambia de tamaño */}
 					<Box
 						sx={{
 							width: "100%",
@@ -203,7 +200,7 @@ export function ImageCard({ item, onEdit, onDelete }: Props) {
 								style={{
 									maxWidth: "100%",
 									maxHeight: "100%",
-									objectFit: "contain", // mantiene proporción dentro del cuadro fijo
+									objectFit: "contain",
 									display: "block",
 								}}
 							/>

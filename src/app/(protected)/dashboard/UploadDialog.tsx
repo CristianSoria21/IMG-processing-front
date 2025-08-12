@@ -14,27 +14,23 @@ import {
 	Slider,
 	IconButton,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useEffect, useRef, useState } from "react";
-import type { Operation } from "@/types";
-
-export type UploadOptions = {
-	grayscale: boolean;
-	width: number | null;
-	height: number | null;
-	rotation: number; // 0..360
-};
+import type { Operation, UploadOptions } from "@/types";
+import { buildOperations } from "@/services/imageOps";
+import { UploadDropzone } from "./UploadDropzone";
 
 type Props = {
 	open: boolean;
 	onClose: () => void;
-	onSubmit: (payload: { file: File; operations: Operation[] }) => void; // 👈 ahora envía operations[]
+	onSubmit: (payload: { file: File; operations: Operation[] }) => void;
 	loading?: boolean;
 };
 
 export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
-	const inputRef = useRef<HTMLInputElement>(null);
+	const inputRef = useRef<HTMLInputElement>(
+		null
+	) as React.RefObject<HTMLInputElement>;
 	const [file, setFile] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 	const [options, setOptions] = useState<UploadOptions>({
@@ -69,24 +65,12 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 
 	const validDims = (v: number | null) =>
 		v == null || (Number.isFinite(v) && v > 0 && v <= 4000);
-	const resizeReady = options.width != null && options.height != null;
 	const canSubmit =
 		!!file && validDims(options.width) && validDims(options.height);
 
 	const submit = () => {
 		if (!file || !canSubmit) return;
-
-		const ops: Operation[] = [];
-		if (options.grayscale) ops.push({ type: "GREYSCALE" });
-		if (resizeReady)
-			ops.push({
-				type: "RESIZE",
-				width: options.width!,
-				height: options.height!,
-			});
-		if (options.rotation !== 0)
-			ops.push({ type: "ROTATE", deg: Math.round(options.rotation) });
-
+		const ops = buildOperations(options);
 		onSubmit({ file, operations: ops });
 	};
 
@@ -99,7 +83,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 					justifyContent: "space-between",
 				}}
 			>
-				Upload & Transform
+				Subir y Procesar
 				<IconButton onClick={onReset} title="Reset">
 					<RestartAltIcon />
 				</IconButton>
@@ -107,31 +91,11 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 
 			<DialogContent dividers>
 				<Stack spacing={3}>
-					{/* Dropzone / Picker */}
-					<Box
-						onDragOver={(e) => e.preventDefault()}
+					<UploadDropzone
+						onFileInput={onFileInput}
 						onDrop={onDrop}
-						onClick={() => inputRef.current?.click()}
-						sx={{
-							border: "1px dashed rgba(148,163,184,.35)",
-							borderRadius: 2,
-							p: 3,
-							textAlign: "center",
-							cursor: "pointer",
-						}}
-					>
-						<CloudUploadIcon />
-						<Typography mt={1} variant="body2">
-							Click or drop an image here (PNG/JPG)
-						</Typography>
-						<input
-							ref={inputRef}
-							type="file"
-							accept="image/*"
-							hidden
-							onChange={onFileInput}
-						/>
-					</Box>
+						inputRef={inputRef}
+					/>
 
 					{/* Preview + Controls */}
 					<Stack direction={{ xs: "column", md: "row" }} spacing={3}>
@@ -148,6 +112,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 							}}
 						>
 							{preview ? (
+								// eslint-disable-next-line @next/next/no-img-element
 								<img
 									src={preview}
 									alt="preview"
@@ -162,7 +127,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 								/>
 							) : (
 								<Typography variant="body2" color="text.secondary">
-									No image selected
+									No se ha seleccionado ninguna imagen
 								</Typography>
 							)}
 						</Box>
@@ -177,12 +142,12 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 										}
 									/>
 								}
-								label="Grayscale"
+								label="Escala de grices"
 							/>
 
 							<Stack direction="row" spacing={2}>
 								<TextField
-									label="Width (px)"
+									label="Ancho (px)"
 									type="number"
 									value={options.width ?? ""}
 									onChange={(e) =>
@@ -199,7 +164,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 									}
 								/>
 								<TextField
-									label="Height (px)"
+									label="Alto (px)"
 									type="number"
 									value={options.height ?? ""}
 									onChange={(e) =>
@@ -218,7 +183,7 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 							</Stack>
 
 							<Typography variant="caption" color="text.secondary">
-								Rotation: {options.rotation}°
+								Rotación: {options.rotation}°
 							</Typography>
 							<Slider
 								value={options.rotation}
@@ -235,13 +200,13 @@ export function UploadDialog({ open, onClose, onSubmit, loading }: Props) {
 			</DialogContent>
 
 			<DialogActions>
-				<Button onClick={onClose}>Cancel</Button>
+				<Button onClick={onClose}>Cancelar</Button>
 				<Button
 					onClick={submit}
 					variant="contained"
 					disabled={!canSubmit || loading}
 				>
-					{loading ? "Uploading..." : "Upload"}
+					{loading ? "Subiendo..." : "Subir"}
 				</Button>
 			</DialogActions>
 		</Dialog>

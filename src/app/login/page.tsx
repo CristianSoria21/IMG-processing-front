@@ -41,8 +41,8 @@ export default function LoginPage() {
 				}}
 			>
 				<CardContent>
-					<Typography variant="h5" fontWeight={700} gutterBottom>
-						Login
+					<Typography variant="h5" fontWeight={700} gutterBottom mb={2}>
+						Inicio de Sesión
 					</Typography>
 					{error && (
 						<Alert severity="error" sx={{ mb: 2 }}>
@@ -52,7 +52,7 @@ export default function LoginPage() {
 					<form onSubmit={handleSubmit}>
 						<Stack spacing={2}>
 							<TextField
-								label="Email"
+								label="Correo"
 								type="email"
 								fullWidth
 								value={form.email}
@@ -62,7 +62,7 @@ export default function LoginPage() {
 								required
 							/>
 							<TextField
-								label="Password"
+								label="Contraseña"
 								type="password"
 								fullWidth
 								value={form.password}
@@ -78,10 +78,19 @@ export default function LoginPage() {
 								fullWidth
 								disabled={loading}
 							>
-								{loading ? "Loading..." : "Login"}
+								{loading ? "Cargando..." : "Iniciar Sesíon"}
 							</Button>
 							<Typography variant="body2" textAlign="center">
-								Dont have an account? <Link href="/register">Register</Link>
+								No tienes una cuenta?{" "}
+								<Link
+									href="/register"
+									style={{
+										color: "#8B5CF6",
+										fontWeight: 700,
+									}}
+								>
+									Registro
+								</Link>
 							</Typography>
 						</Stack>
 					</form>

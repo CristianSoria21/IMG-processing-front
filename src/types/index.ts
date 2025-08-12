@@ -20,3 +20,19 @@ export type Operation =
 	| { type: "GREYSCALE" }
 	| { type: "RESIZE"; width: number; height: number }
 	| { type: "ROTATE"; deg: number };
+
+export type UploadOptions = {
+	grayscale: boolean;
+	width: number | null;
+	height: number | null;
+	rotation: number;
+};
+
+export type AuthValue = {
+	isAuthenticated: boolean;
+	isReady: boolean;
+	user: AuthUser | null;
+	token: string | null;
+	setAuth: (p: { token: string; user: AuthUser }) => void;
+	logout: () => void;
+};

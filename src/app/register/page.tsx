@@ -41,7 +41,7 @@ export default function RegisterPage() {
 				}}
 			>
 				<CardContent>
-					<Typography variant="h5" fontWeight={700} gutterBottom>
+					<Typography variant="h5" fontWeight={700} gutterBottom mb={2}>
 						Register
 					</Typography>
 					{error && (
@@ -52,7 +52,7 @@ export default function RegisterPage() {
 					<form onSubmit={handleSubmit}>
 						<Stack spacing={2}>
 							<TextField
-								label="Name"
+								label="Nombre"
 								fullWidth
 								value={form.name}
 								onChange={(e) =>
@@ -61,7 +61,7 @@ export default function RegisterPage() {
 								required
 							/>
 							<TextField
-								label="Email"
+								label="Correo electronico"
 								type="email"
 								fullWidth
 								value={form.email}
@@ -71,7 +71,7 @@ export default function RegisterPage() {
 								required
 							/>
 							<TextField
-								label="Password"
+								label="Contraseña"
 								type="password"
 								fullWidth
 								value={form.password}
@@ -87,10 +87,19 @@ export default function RegisterPage() {
 								fullWidth
 								disabled={loading}
 							>
-								{loading ? "Loading..." : "Register"}
+								{loading ? "Cargando..." : "Registrarse"}
 							</Button>
 							<Typography variant="body2" textAlign="center">
-								Already have an account? <Link href="/login">Login</Link>
+								Ya tienes una cuenta?{" "}
+								<Link
+									href="/login"
+									style={{
+										color: "#8B5CF6",
+										fontWeight: 700,
+									}}
+								>
+									Inicio de sesión
+								</Link>
 							</Typography>
 						</Stack>
 					</form>
