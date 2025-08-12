@@ -42,7 +42,7 @@ export default function RegisterPage() {
 			>
 				<CardContent>
 					<Typography variant="h5" fontWeight={700} gutterBottom mb={2}>
-						Register
+						Registro
 					</Typography>
 					{error && (
 						<Alert severity="error" sx={{ mb: 2 }}>
@@ -108,3 +108,4 @@ export default function RegisterPage() {
 		</Box>
 	);
 }
+
